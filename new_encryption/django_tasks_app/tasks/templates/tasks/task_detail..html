@@ -1,0 +1,40 @@
+{% extends 'tasks/base.html' %}
+
+{% block title %}{{ task.title }}{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2>{{ task.title }}</h2>
+                <div>
+                    <a href="{% url 'tasks:task_update' task.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                    <a href="{% url 'tasks:task_delete' task.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <p class="card-text">{{ task.description }}</p>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <strong>Status:</strong> 
+                    <span class="badge bg-{% if task.status == 'done' %}success{% elif task.status == 'in_progress' %}warning{% else %}info{% endif %}">
+                        {{ task.get_status_display }}
+                    </span>
+                </li>
+                {% if task.due_date %}
+                <li class="list-group-item">
+                    <strong>Due Date:</strong> 
+                    {{ task.due_date }}
+                    {% if task.is_overdue %}
+                        <span class="badge bg-danger">Overdue</span>
+                    {% endif %}
+                </li>
+                {% endif %}
+                <li class="list-group-item"><strong>Created:</strong> {{ task.created_at }}</li>
+                <li class="list-group-item"><strong>Last Updated:</strong> {{ task.updated_at }}</li>
+            </ul>
+        </div>
+    </div>
+    <a href="{% url 'tasks:task_list' %}" class="btn btn-secondary mt-3">Back to all tasks</a>
+{% endblock %}

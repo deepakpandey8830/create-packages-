@@ -1,0 +1,29 @@
+{% extends 'tasks/base.html' %}
+
+{% block title %}All Tasks{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">Tasks</h1>
+    
+    <a href="{% url 'tasks:task_create' %}" class="btn btn-primary mb-3">Create New Task</a>
+    
+    <div class="list-group">
+        {% for task in tasks %}
+            <a href="{% url 'tasks:task_detail' task.pk %}" class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">{{ task.title }}</h5>
+                    <small class="text-{% if task.status == 'done' %}success{% elif task.is_overdue %}danger{% else %}primary{% endif %}">
+                        {{ task.get_status_display }}
+                        {% if task.due_date %}
+                            (Due: {{ task.due_date }})
+                        {% endif %}
+                    </small>
+                </div>
+                <p class="mb-1">{{ task.description|truncatechars:100 }}</p>
+                <small>Created: {{ task.created_at|date:"M d, Y" }}</small>
+            </a>
+        {% empty %}
+            <div class="alert alert-info">No tasks yet. Create your first task!</div>
+        {% endfor %}
+    </div>
+{% endblock %}
